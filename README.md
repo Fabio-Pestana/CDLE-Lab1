@@ -35,7 +35,8 @@ gerar os dados → converter para Parquet → explorar → gerar as queries → 
 ├── query_templates/    cópia corrigida dos templates do TPC-DS
 ├── results/            medições SF1 (ficheiros CSV)
 ├── results10/          medições SF10 (ficheiros CSV)
-├── extras_01/          exercícios extra e trabalho exploratório
+├── extras_01/          exercícios extra
+├── cdle_50746_50756_relatorio         
 └── .gitignore
 ```
 
