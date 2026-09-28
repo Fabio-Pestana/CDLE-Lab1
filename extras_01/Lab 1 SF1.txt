@@ -1,0 +1,741 @@
+Lab 1
+
+fabio@LAPTOP-VLD20IG7:~$ export T=~/tpcds
+fabio@LAPTOP-VLD20IG7:~$ export PY=$T/venvCDLE/bin/python
+
+
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$ ls -l dsdgen dsqgen tpcds.idx
+-rwxr-xr-x 1 fabio fabio 264592 Sep 14 20:14 dsdgen
+-rwxr-xr-x 1 fabio fabio 211648 Sep 14 20:14 dsqgen
+-rw-r--r-- 1 fabio fabio 640585 Sep 14 20:14 tpcds.idx
+
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$ mkdir -p $T/data/sf1
+N=4
+time ( for i in $(seq 1 $N); do
+  ./dsdgen -SCALE 1 -DIR $T/data/sf1 -PARALLEL $N -CHILD $i -TERMINATE N -QUIET Y &
+done; wait )
+
+real    0m26.180s
+user    0m25.575s
+sys     0m5.584s
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$
+
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$ ls $T/data/sf1 | head
+call_center_1_4.dat
+catalog_page_1_4.dat
+catalog_returns_1_4.dat
+catalog_sales_1_4.dat
+customer_1_4.dat
+customer_address_1_4.dat
+customer_demographics_1_4.dat
+customer_demographics_2_4.dat
+customer_demographics_3_4.dat
+customer_demographics_4_4.dat
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$ du -sh $T/data/sf1
+1.2G    /home/fabio/tpcds/data/sf1
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$ cat $T/data/sf1/store_sales_*.dat | wc -l
+2880404
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$
+
+
+-------------------------------------------------------
+
+PART 3
+
+
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$ $PY $T/starter/to_parquet.py \
+  --kit $T/DSGen-software-code-4.0.0/tools \
+  --src $T/data/sf1 --dst $T/parquet/sf1 --threads 4
+du -sh $T/parquet/sf1
+call_center              files=1   rows=6           dat_lines=6           OK  0.0s
+catalog_page             files=1   rows=11718       dat_lines=11718       OK  0.0s
+catalog_returns          files=1   rows=144067      dat_lines=144067      OK  0.1s
+catalog_sales            files=1   rows=1441548     dat_lines=1441548     OK  0.9s
+customer                 files=1   rows=100000      dat_lines=100000      OK  0.1s
+customer_address         files=1   rows=50000       dat_lines=50000       OK  0.1s
+customer_demographics    files=4   rows=1920800     dat_lines=1920800     OK  0.3s
+date_dim                 files=1   rows=73049       dat_lines=73049       OK  0.1s
+dbgen_version            files=1   rows=1           dat_lines=1           OK  0.0s
+household_demographics   files=1   rows=7200        dat_lines=7200        OK  0.0s
+income_band              files=1   rows=20          dat_lines=20          OK  0.0s
+inventory                files=4   rows=11745000    dat_lines=11745000    OK  0.5s
+item                     files=1   rows=18000       dat_lines=18000       OK  0.1s
+promotion                files=1   rows=300         dat_lines=300         OK  0.0s
+reason                   files=1   rows=75          dat_lines=75          OK  0.0s
+ship_mode                files=1   rows=20          dat_lines=20          OK  0.0s
+store                    files=1   rows=12          dat_lines=12          OK  0.0s
+store_returns            files=1   rows=287514      dat_lines=287514      OK  0.1s
+store_sales              files=1   rows=2880404     dat_lines=2880404     OK  1.0s
+time_dim                 files=1   rows=86400       dat_lines=86400       OK  0.0s
+warehouse                files=1   rows=5           dat_lines=5           OK  0.0s
+web_page                 files=1   rows=60          dat_lines=60          OK  0.0s
+web_returns              files=1   rows=71763       dat_lines=71763       OK  0.1s
+web_sales                files=1   rows=719384      dat_lines=719384      OK  0.4s
+web_site                 files=1   rows=30          dat_lines=30          OK  0.0s
+Conversion time (COPY only): 3.9s; row-count mismatches: 0
+272M    /home/fabio/tpcds/parquet/sf
+
+---
+
+Record: conversion time and Parquet size. How does the size compare with the .dat files, and why?
+
+---
+
+PART 4
+
+
+(venvCDLE) fabio@LAPTOP-VLD20IG7:/mnt/c/Users/fabio/Desktop/MEIM/3Semestre/CDLE$ export T=~/tpcds
+(venvCDLE) fabio@LAPTOP-VLD20IG7:/mnt/c/Users/fabio/Desktop/MEIM/3Semestre/CDLE$ export PY=$T/venvCDLE/bin/python
+(venvCDLE) fabio@LAPTOP-VLD20IG7:/mnt/c/Users/fabio/Desktop/MEIM/3Semestre/CDLE$ python /mnt/c/Users/fabio/Desktop/MEIM/3Semestre/CDLE/Labs/run_all.py
+[running] A executar 01_list_tables.sql ...
+full result saved to /home/fabio/tpcds/results/01_list_tables.csv
+┌────────────────────────┐
+│       table_name       │
+│        varchar         │
+├────────────────────────┤
+│ call_center            │
+│ catalog_page           │
+│ catalog_returns        │
+│ catalog_sales          │
+│ customer               │
+│ customer_address       │
+│ customer_demographics  │
+│ date_dim               │
+│ dbgen_version          │
+│ household_demographics │
+│     ·                  │
+│     ·                  │
+│     ·                  │
+│ ship_mode              │
+│ store                  │
+│ store_returns          │
+│ store_sales            │
+│ time_dim               │
+│ warehouse              │
+│ web_page               │
+│ web_returns            │
+│ web_sales              │
+│ web_site               │
+└────────────────────────┘
+    25 rows (20 shown)  
+
+statement 1: 0.004s
+  [pass] Guardado em /home/fabio/tpcds/results/01_list_tables.csv
+
+[running] A executar 02_small_table.sql ...
+full result saved to /home/fabio/tpcds/results/02_small_table.csv
+┌─────────────────┬──────────────────┬───────────┬─────────┬────────────────┬──────────────────────┐
+│ sm_ship_mode_sk │ sm_ship_mode_id  │  sm_type  │ sm_code │   sm_carrier   │     sm_contract      │
+│      int32      │     varchar      │  varchar  │ varchar │    varchar     │       varchar        │
+├─────────────────┼──────────────────┼───────────┼─────────┼────────────────┼──────────────────────┤
+│               1 │ AAAAAAAABAAAAAAA │ EXPRESS   │ AIR     │ UPS            │ YvxVaJI10            │
+│               2 │ AAAAAAAACAAAAAAA │ NEXT DAY  │ AIR     │ FEDEX          │ ldhM8IvpzHgdbBgDfI   │
+│               3 │ AAAAAAAADAAAAAAA │ OVERNIGHT │ AIR     │ AIRBORNE       │ 6Hzzp4JkzjqD8MGXLCDa │
+│               4 │ AAAAAAAAEAAAAAAA │ TWO DAY   │ AIR     │ USPS           │ UaAJjKDnL4gTOqbpj    │
+│               5 │ AAAAAAAAFAAAAAAA │ LIBRARY   │ AIR     │ DHL            │ HVDFCcQ              │
+│               6 │ AAAAAAAAGAAAAAAA │ REGULAR   │ SURFACE │ TBS            │ Ek                   │
+│               7 │ AAAAAAAAHAAAAAAA │ EXPRESS   │ SURFACE │ ZHOU           │ hGoF18SLDDPBj        │
+│               8 │ AAAAAAAAIAAAAAAA │ NEXT DAY  │ SURFACE │ ZOUROS         │ yVfotg7Tio3MVhBg6Bkn │
+│               9 │ AAAAAAAAJAAAAAAA │ OVERNIGHT │ SURFACE │ MSC            │ Xjy3ZPuiDjzHlRx14Z3  │
+│              10 │ AAAAAAAAKAAAAAAA │ TWO DAY   │ SURFACE │ LATVIAN        │ P7FBIt8yd            │
+│              11 │ AAAAAAAALAAAAAAA │ LIBRARY   │ SURFACE │ ALLIANCE       │ OrDuVy2H             │
+│              12 │ AAAAAAAAMAAAAAAA │ REGULAR   │ SEA     │ ORIENTAL       │ GNJr3g5i7oorKqtX     │
+│              13 │ AAAAAAAANAAAAAAA │ EXPRESS   │ SEA     │ BARIAN         │ qENFQ                │
+│              14 │ AAAAAAAAOAAAAAAA │ NEXT DAY  │ SEA     │ BOXBUNDLES     │ A5BYO1qH8HGTTN       │
+│              15 │ AAAAAAAAPAAAAAAA │ OVERNIGHT │ SEA     │ GREAT EASTERN  │ uukTktPYycct8        │
+│              16 │ AAAAAAAAABAAAAAA │ TWO DAY   │ SEA     │ DIAMOND        │ 2mM8l                │
+│              17 │ AAAAAAAABBAAAAAA │ LIBRARY   │ SEA     │ RUPEKSA        │ 5FKNB0j8aaqTB        │
+│              18 │ AAAAAAAACBAAAAAA │ REGULAR   │ BIKE    │ GERMA          │ I3uCelXtjP           │
+│              19 │ AAAAAAAADBAAAAAA │ EXPRESS   │ BIKE    │ HARMSTORF      │ fop0bcSd91J26IVpR    │
+│              20 │ AAAAAAAAEBAAAAAA │ NEXT DAY  │ BIKE    │ PRIVATECARRIER │ O9V6oF8RJnLMmZYd1    │
+└─────────────────┴──────────────────┴───────────┴─────────┴────────────────┴──────────────────────┘
+  20 rows                                                                                6 columns
+
+statement 1: 0.005s
+  [pass] Guardado em /home/fabio/tpcds/results/02_small_table.csv
+
+[running] A executar 03_describe_table.sql ...
+full result saved to /home/fabio/tpcds/results/03_describe_table.csv
+┌───────────────────────┬──────────────┬─────────┬─────────┬─────────┬─────────┐
+│      column_name      │ column_type  │  null   │   key   │ default │  extra  │
+│        varchar        │   varchar    │ varchar │ varchar │ varchar │ varchar │
+├───────────────────────┼──────────────┼─────────┼─────────┼─────────┼─────────┤
+│ ss_sold_date_sk       │ INTEGER      │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_sold_time_sk       │ INTEGER      │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_item_sk            │ INTEGER      │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_customer_sk        │ INTEGER      │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_cdemo_sk           │ INTEGER      │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_hdemo_sk           │ INTEGER      │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_addr_sk            │ INTEGER      │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_store_sk           │ INTEGER      │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_promo_sk           │ INTEGER      │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_ticket_number      │ INTEGER      │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_quantity           │ INTEGER      │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_wholesale_cost     │ DECIMAL(7,2) │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_list_price         │ DECIMAL(7,2) │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_sales_price        │ DECIMAL(7,2) │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_ext_discount_amt   │ DECIMAL(7,2) │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_ext_sales_price    │ DECIMAL(7,2) │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_ext_wholesale_cost │ DECIMAL(7,2) │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_ext_list_price     │ DECIMAL(7,2) │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_ext_tax            │ DECIMAL(7,2) │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_coupon_amt         │ DECIMAL(7,2) │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_net_paid           │ DECIMAL(7,2) │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_net_paid_inc_tax   │ DECIMAL(7,2) │ YES     │ NULL    │ NULL    │ NULL    │
+│ ss_net_profit         │ DECIMAL(7,2) │ YES     │ NULL    │ NULL    │ NULL    │
+└───────────────────────┴──────────────┴─────────┴─────────┴─────────┴─────────┘
+  23 rows                                                            6 columns
+
+statement 1: 0.003s
+  [pass] Guardado em /home/fabio/tpcds/results/03_describe_table.csv
+
+[running] A executar 04_row_counts.sql ...
+full result saved to /home/fabio/tpcds/results/04_row_counts.csv
+┌────────────────────────┬───────────┐
+│       table_name       │ row_count │
+│        varchar         │   int64   │
+├────────────────────────┼───────────┤
+│ call_center            │         6 │
+│ catalog_page           │     11718 │
+│ catalog_returns        │    144067 │
+│ catalog_sales          │   1441548 │
+│ customer               │    100000 │
+│ customer_address       │     50000 │
+│ customer_demographics  │   1920800 │
+│ date_dim               │     73049 │
+│ dbgen_version          │         1 │
+│ household_demographics │      7200 │
+│     ·                  │         · │
+│     ·                  │         · │
+│     ·                  │         · │
+│ ship_mode              │        20 │
+│ store                  │        12 │
+│ store_returns          │    287514 │
+│ store_sales            │   2880404 │
+│ time_dim               │     86400 │
+│ warehouse              │         5 │
+│ web_page               │        60 │
+│ web_returns            │     71763 │
+│ web_sales              │    719384 │
+│ web_site               │        30 │
+└────────────────────────┴───────────┘
+  25 rows (20 shown)       2 columns
+
+statement 1: 0.036s
+  [pass] Guardado em /home/fabio/tpcds/results/04_row_counts.csv
+
+[running] A executar 05_sample_fact_rows.sql ...
+full result saved to /home/fabio/tpcds/results/05_sample_fact_rows.csv
+┌──────────────────┬─────────────────┬────────────┬────────────────┬─────────────┬─────────────┬────────────────┬───────────────┐
+│ ss_ticket_number │ ss_sold_date_sk │ ss_item_sk │ ss_customer_sk │ ss_store_sk │ ss_quantity │ ss_sales_price │ ss_net_profit │
+│      int32       │      int32      │   int32    │     int32      │    int32    │    int32    │  decimal(7,2)  │ decimal(7,2)  │
+├──────────────────┼─────────────────┼────────────┼────────────────┼─────────────┼─────────────┼────────────────┼───────────────┤
+│                1 │         2451813 │       3617 │          67006 │          10 │          79 │           2.80 │       -779.73 │
+│                1 │         2451813 │      13283 │          67006 │          10 │          37 │          41.47 │       -865.95 │
+│                1 │         2451813 │      13631 │          67006 │          10 │          99 │          83.98 │        342.54 │
+│                1 │         2451813 │       5981 │          67006 │          10 │          14 │           6.10 │       -717.78 │
+│                1 │         2451813 │       4553 │          67006 │          10 │         100 │           0.73 │      -2435.00 │
+│                1 │         2451813 │      10993 │          67006 │          10 │          91 │          93.24 │        -21.84 │
+│                1 │         2451813 │         49 │          67006 │          10 │           5 │           6.68 │        -20.00 │
+│                1 │         2451813 │       4583 │          67006 │          10 │          72 │          61.50 │      -1671.84 │
+│                1 │         2451813 │      13538 │          67006 │          10 │          14 │           0.00 │       -161.56 │
+│                1 │         2451813 │       3248 │          67006 │          10 │          58 │           3.52 │        -60.90 │
+└──────────────────┴─────────────────┴────────────┴────────────────┴─────────────┴─────────────┴────────────────┴───────────────┘
+  10 rows                                                                                                             8 columns
+
+statement 1: 0.007s
+  [pass] Guardado em /home/fabio/tpcds/results/05_sample_fact_rows.csv
+
+[running] A executar 06_keys_to_dates.sql ...
+full result saved to /home/fabio/tpcds/results/06_keys_to_dates.csv
+┌─────────────────┬────────────┬────────────┬────────┬───────┬─────────────┐
+│ ss_sold_date_sk │   d_date   │ d_day_name │ d_year │ d_moy │ sales_lines │
+│      int32      │    date    │  varchar   │ int32  │ int32 │    int64    │
+├─────────────────┼────────────┼────────────┼────────┼───────┼─────────────┤
+│         2450816 │ 1998-01-02 │ Friday     │   1998 │     1 │         975 │
+│         2450817 │ 1998-01-03 │ Saturday   │   1998 │     1 │         773 │
+│         2450818 │ 1998-01-04 │ Sunday     │   1998 │     1 │        1140 │
+│         2450819 │ 1998-01-05 │ Monday     │   1998 │     1 │         882 │
+│         2450820 │ 1998-01-06 │ Tuesday    │   1998 │     1 │         898 │
+│         2450821 │ 1998-01-07 │ Wednesday  │   1998 │     1 │         854 │
+│         2450822 │ 1998-01-08 │ Thursday   │   1998 │     1 │         896 │
+│         2450823 │ 1998-01-09 │ Friday     │   1998 │     1 │         742 │
+│         2450824 │ 1998-01-10 │ Saturday   │   1998 │     1 │         791 │
+│         2450825 │ 1998-01-11 │ Sunday     │   1998 │     1 │         889 │
+└─────────────────┴────────────┴────────────┴────────┴───────┴─────────────┘
+  10 rows                                                        6 columns
+
+statement 1: 0.065s
+  [pass] Guardado em /home/fabio/tpcds/results/06_keys_to_dates.csv
+
+[running] A executar 07_simple_join.sql ...
+full result saved to /home/fabio/tpcds/results/07_simple_join.csv
+┌─────────────┬─────────────┬───────────────┐
+│ i_category  │ sales_lines │    revenue    │
+│   varchar   │    int64    │ decimal(38,2) │
+├─────────────┼─────────────┼───────────────┤
+│ Shoes       │       57389 │  108013847.56 │
+│ Music       │       57228 │  107468310.69 │
+│ Women       │       56186 │  105758472.62 │
+│ Books       │       55583 │  103975292.18 │
+│ Electronics │       54548 │  102303320.86 │
+│ Children    │       54309 │  102272277.30 │
+│ Men         │       54995 │  101905543.12 │
+│ Jewelry     │       54311 │  101841471.59 │
+│ Home        │       53708 │  100722765.96 │
+│ Sports      │       53896 │  100467438.45 │
+│ NULL        │        1708 │    3168619.10 │
+└─────────────┴─────────────┴───────────────┘
+  11 rows                         3 columns
+
+statement 1: 0.054s
+  [pass] Guardado em /home/fabio/tpcds/results/07_simple_join.csv
+
+[running] A executar 08_nulls.sql ...
+full result saved to /home/fabio/tpcds/results/08_nulls.csv
+┌────────────┬────────────────┬───────────┬───────────────┬────────────┬──────────────────┐
+│ total_rows │ null_sold_date │ null_item │ null_customer │ null_store │ null_sales_price │
+│   int64    │     int64      │   int64   │     int64     │   int64    │      int64       │
+├────────────┼────────────────┼───────────┼───────────────┼────────────┼──────────────────┤
+│    2880404 │         130093 │         0 │        129752 │     130034 │           129666 │
+└────────────┴────────────────┴───────────┴───────────────┴────────────┴──────────────────┘
+
+statement 1: 0.036s
+  [pass] Guardado em /home/fabio/tpcds/results/08_nulls.csv
+
+
+
+Exercise (optional, in class or at home): write your own file $T/starter/examples/09_top_states.sql that returns the 5 US states with the most customers. Hint: a customer's current address is customer.c_current_addr_sk, which is a key into customer_address; the state is customer_address.ca_state.
+
+
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$ $PY $T/starter/show_query.py --parquet $T/parquet/sf1 --out $T/results/categories.csv $T/starter/examples/09_top_states.sql
+full result saved to /home/fabio/tpcds/results/categories.csv
+┌─────────┬────────────────┐
+│  state  │ customer_count │
+│ varchar │     int64      │
+├─────────┼────────────────┤
+│ TX      │           7799 │
+│ GA      │           4955 │
+│ VA      │           4330 │
+│ KY      │           3849 │
+│ NC      │           3303 │
+└─────────┴────────────────┘
+
+statement 1: 0.026s
+
+--------------------------------------------
+
+Part 5
+
+
+
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$ bash $T/starter/fix_templates.sh $T/DSGen-software-code-4.0.0 $T/query_templates
+Fixed templates written to /home/fabio/tpcds/query_templates
+
+
+```
+O script `fix_templates.sh` aplica correções nos templates oficiais de queries do TPC-DS (versão v4.0.0) para resolver incompatibilidades de sintaxe e bugs durante a geração via `dsqgen` e execução no **DuckDB**.
+
+Podes escolher duas destas **6 correções** para incluir e explicar no teu relatório:
+
+---
+
+### 1. Correção do Aritmética de Datas (`interval` vs `days`)
+
+* **O que altera:** Substitui expressões como `+ 30 days)` por `+ interval '30' day)`.
+* **Problema e Razão:** Nos templates padrão, a manipulação de datas utiliza a sintaxe `cast(...) + X days`, que não é SQL standard e resulta num erro de sintaxe no DuckDB. O DuckDB exige a utilização explícita da palavra-chave `INTERVAL` acompanhada de uma string de texto (ex.: `INTERVAL '30' DAY`) para efetuar operações aritméticas com datas.
+
+---
+
+### 2. Definição dos Marcadores `_BEGIN` e `_END` no Dialeto Netezza
+
+* **O que altera:** Adiciona as definições `define _BEGIN = ...` e `define _END = ...` ao ficheiro de dialeto `netezza.tpl`.
+* **Problema e Razão:** Ao gerar as queries com a ferramenta `dsqgen`, o programa falha com o erro *"Substitution '_END' is used before being initialized"*. Isto acontece porque o dialeto Netezza na versão v4.0.0 omite estes marcadores de início e fim de consulta, obrigando a que sejam injetados explicitamente no template de dialeto.
+
+---
+
+### 3. Tratamento de Palavras Reservadas do DuckDB (`at` e `returns`)
+
+* **O que altera:** Altera o alias da tabela em `query90.tpl` de `at` para `at1`, e coloca aspas no alias da coluna `"returns"` em `query77.tpl`.
+* **Problema e Razão:** As palavras `at` (usada no SQL standard para fusos horários/funções) e `returns` são **palavras reservadas** no analisador sintático (*parser*) do DuckDB. Usá-las como aliases não delimitados provoca erros de parsing durante a compilação da query.
+
+---
+
+### 4. Correção do Nome de Coluna Inexistente (`query30.tpl`)
+
+* **O que altera:** Substitui todas as ocorrências da coluna `c_last_review_date_sk` por `c_last_review_date` no ficheiro `query30.tpl`.
+* **Problema e Razão:** O template oficial faz referência à coluna `c_last_review_date_sk`, contudo, o esquema da tabela `customer` do TPC-DS (`tpcds.sql`) define o campo simplesmente como `c_last_review_date` (sem o sufixo `_sk`). Sem esta alteração, a query falha com o erro de coluna não encontrada (*Binder Error*).
+
+---
+
+### 5. Resolução de Ambiguidade nas Cláusulas `ORDER BY` (`query58.tpl` e `query72.tpl`)
+
+* **O que altera:** Adiciona o prefixo/alias da tabela aos campos de ordenação (ex.: `ss_items.item_id` na Q58 e `d1.d_week_seq` na Q72).
+* **Problema e Razão:** Estas queries realizam junções/subqueries onde a mesma coluna existe em mais do que uma tabela de origem. Quando o DuckDB tenta ordenar os resultados sem qualificação explícita do alias da tabela, dispara um erro de coluna ambígua (*Ambiguous reference*).
+```
+
+
+5.2 
+
+
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$ cd $T/DSGen-software-code-4.0.0/tools
+mkdir -p $T/queries/sf1
+./dsqgen -DIRECTORY $T/query_templates -INPUT $T/query_templates/templates.lst \
+  -DIALECT netezza -SCALE 1 -OUTPUT_DIR $T/queries/sf1 -QUIET Y
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$
+
+
+5.3
+
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$ $PY $T/starter/split_queries.py $T/queries/sf1/query_0.sql $T/queries/sf1/split
+ls $T/queries/sf1/split | head -3     # query01.sql query02.sql query03.sql
+99 queries written to /home/fabio/tpcds/queries/sf1/split
+query01.sql
+query02.sql
+query03.sql
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$
+
+
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$ $PY $T/starter/show_query.py --parquet $T/parquet/sf1 $T/queries/sf1/split/query03.sql
+┌────────┬──────────┬───────────────────────┬───────────────┐
+│ d_year │ brand_id │         brand         │    sum_agg    │
+│ int32  │  int32   │        varchar        │ decimal(38,2) │
+├────────┼──────────┼───────────────────────┼───────────────┤
+│   1998 │  7003004 │ exportibrand #4       │      -1445.10 │
+│   1998 │ 10016001 │ corpamalgamalg #1     │      -2616.31 │
+│   1998 │  1004002 │ edu packamalg #2      │      -2950.32 │
+│   1998 │  3001002 │ amalgexporti #2       │      -4889.11 │
+│   1998 │  3003001 │ exportiexporti #1     │      -6844.08 │
+│   1998 │  3004001 │ edu packexporti #1    │      -7210.76 │
+│   1998 │  5004001 │ edu packscholar #1    │     -10021.47 │
+│   1998 │  8001003 │ amalgnameless #3      │     -20569.07 │
+│   1999 │  5004001 │ edu packscholar #1    │       -745.07 │
+│   1999 │  3004001 │ edu packexporti #1    │      -3250.66 │
+│     ·  │     ·    │         ·             │          ·    │
+│     ·  │     ·    │         ·             │          ·    │
+│     ·  │     ·    │         ·             │          ·    │
+│   2002 │  7013001 │ exportinameless #1    │      -2825.31 │
+│   2002 │  2003001 │ exportiimporto #1     │      -3109.92 │
+│   2002 │  1004002 │ edu packamalg #2      │      -5148.02 │
+│   2002 │  3004001 │ importoamalg #2       │      -6022.68 │
+│   2002 │  4003001 │ importoamalg #2       │      -8266.85 │
+│   2002 │  7015008 │ scholarnameless #8    │     -10841.54 │
+│   2002 │  4001001 │ amalgedu pack #1      │     -11798.98 │
+│   2002 │  3001002 │ amalgexporti #2       │     -12686.40 │
+│   2002 │  1002001 │ importoamalg #1       │     -14362.34 │
+│   2002 │ 10013015 │ exportiamalgamalg #15 │     -15218.40 │
+└────────┴──────────┴───────────────────────┴───────────────┘
+  49 rows (20 shown)                              4 columns
+
+statement 1: 0.032s
+
+
+5.4
+
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$ mkdir -p $T/results
+$PY $T/starter/run_queries.py --parquet $T/parquet/sf1 --queries $T/queries/sf1/split \
+  --out $T/results/sf1_first.csv --threads 4
+DuckDB 1.5.5, threads=4, memory_limit=6.0 GiB, 99 queries x 1 run(s)
+run 1: 5.15s
+OK: 99/99   sum of medians: 5.15s
+slowest (median): q23 0.389s, q67 0.302s, q14 0.286s, q4 0.216s, q22 0.185s
+results -> /home/fabio/tpcds/results/sf1_first.csv
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$
+
+
+-----------------------------
+Part 6
+
+A:
+
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$ $PY $T/starter/run_queries.py --parquet $T/parquet/sf1 --queries $T/queries/sf1/split \
+  --out $T/results/sf1_t4_runs3.csv --threads 4 --runs 3
+DuckDB 1.5.5, threads=4, memory_limit=6.0 GiB, 99 queries x 3 run(s)
+run 1: 5.12s
+run 2: 4.93s
+run 3: 5.01s
+OK: 99/99   sum of medians: 4.96s
+slowest (median): q23 0.354s, q67 0.307s, q14 0.287s, q72 0.178s, q4 0.174s
+results -> /home/fabio/tpcds/results/sf1_t4_runs3.csv
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$
+
+B:
+
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$ for t in 1 2 4; do
+  $PY $T/starter/run_queries.py --parquet $T/parquet/sf1 --queries $T/queries/sf1/split \
+    --out $T/results/sf1_t$t.csv --threads $t --runs 3
+done
+DuckDB 1.5.5, threads=1, memory_limit=6.0 GiB, 99 queries x 3 run(s)
+run 1: 12.79s
+run 2: 13.00s
+run 3: 13.08s
+OK: 99/99   sum of medians: 12.95s
+slowest (median): q23 1.168s, q14 0.825s, q67 0.730s, q72 0.565s, q4 0.480s
+results -> /home/fabio/tpcds/results/sf1_t1.csv
+DuckDB 1.5.5, threads=2, memory_limit=6.0 GiB, 99 queries x 3 run(s)
+run 1: 7.44s
+run 2: 7.59s
+run 3: 7.64s
+OK: 99/99   sum of medians: 7.56s
+slowest (median): q23 0.695s, q14 0.459s, q67 0.432s, q72 0.306s, q4 0.267s
+results -> /home/fabio/tpcds/results/sf1_t2.csv
+DuckDB 1.5.5, threads=4, memory_limit=6.0 GiB, 99 queries x 3 run(s)
+run 1: 4.92s
+run 2: 4.98s
+run 3: 5.05s
+OK: 99/99   sum of medians: 4.97s
+slowest (median): q23 0.356s, q67 0.309s, q14 0.287s, q4 0.179s, q72 0.177s
+results -> /home/fabio/tpcds/results/sf1_t4.csv
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$
+
+
+C:
+
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$ $PY $T/starter/run_queries.py --csv $T/data/sf1 --kit $T/DSGen-software-code-4.0.0/tools \
+  --queries $T/queries/sf1/split --out $T/results/sf1_csv.csv --threads 4 --runs 3 --only 3,7,42,52,55,67
+$PY $T/starter/run_queries.py --parquet $T/parquet/sf1 \
+  --queries $T/queries/sf1/split --out $T/results/sf1_pq.csv --threads 4 --runs 3 --only 3,7,42,52,55,67
+DuckDB 1.5.5, threads=4, memory_limit=6.0 GiB, 6 queries x 3 run(s)
+run 1: 3.15s
+run 2: 2.80s
+run 3: 2.81s
+OK: 6/6   sum of medians: 2.81s
+slowest (median): q67 0.707s, q7 0.569s, q3 0.400s, q42 0.383s, q52 0.378s
+results -> /home/fabio/tpcds/results/sf1_csv.csv
+DuckDB 1.5.5, threads=4, memory_limit=6.0 GiB, 6 queries x 3 run(s)
+run 1: 0.40s
+run 2: 0.38s
+run 3: 0.39s
+OK: 6/6   sum of medians: 0.39s
+slowest (median): q67 0.294s, q7 0.034s, q3 0.017s, q55 0.016s, q42 0.016s
+results -> /home/fabio/tpcds/results/sf1_pq.csv
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$
+
+
+D:
+
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$ $PY $T/starter/run_queries.py --parquet $T/parquet/sf1 --queries $T/queries/sf1/split --explain 67
+┌─────────────────────────────────────┐
+│┌───────────────────────────────────┐│
+││    Query Profiling Information    ││
+│└───────────────────────────────────┘│
+└─────────────────────────────────────┘
+EXPLAIN ANALYZE select  * from (select i_category             ,i_class             ,i_brand             ,i_product_name             ,d_year             ,d_qoy             ,d_moy             ,s_store_id             ,sumsales             ,rank() over (partition by i_category order by sumsales desc) rk       from (select i_category                   ,i_class                   ,i_brand                   ,i_product_name                   ,d_year                   ,d_qoy                   ,d_moy                   ,s_store_id                   ,sum(coalesce(ss_sales_price*ss_quantity,0)) sumsales             from store_sales                 ,date_dim                 ,store                 ,item        where  ss_sold_date_sk=d_date_sk           and ss_item_sk=i_item_sk           and ss_store_sk = s_store_sk           and d_month_seq between 1194 and 1194+11        group by  rollup(i_category, i_class, i_brand, i_product_name, d_year, d_qoy, d_moy,s_store_id))dw1) dw2 where rk <= 100 order by i_category         ,i_class         ,i_brand         ,i_product_name         ,d_year         ,d_qoy         ,d_moy         ,s_store_id         ,sumsales         ,rk limit 100
+┌────────────────────────────────────────────────┐
+│┌──────────────────────────────────────────────┐│
+││              Total Time: 0.248s              ││
+│└──────────────────────────────────────────────┘│
+└────────────────────────────────────────────────┘
+┌───────────────────────────┐
+│           QUERY           │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│      EXPLAIN_ANALYZE      │
+│    ────────────────────   │
+│                           │
+│           0 rows          │
+│           0.00s           │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│           TOP_N           │
+│    ────────────────────   │
+│          Top: 100         │
+│                           │
+│         Order By:         │
+│     dw2.i_category ASC    │
+│      dw2.i_class ASC      │
+│      dw2.i_brand ASC      │
+│   dw2.i_product_name ASC  │
+│       dw2.d_year ASC      │
+│       dw2.d_qoy ASC       │
+│       dw2.d_moy ASC       │
+│     dw2.s_store_id ASC    │
+│      dw2.sumsales ASC     │
+│         dw2.rk ASC        │
+│                           │
+│                           │
+│                           │
+│          100 rows         │
+│           0.00s           │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│           FILTER          │
+│    ────────────────────   │
+│        (rk <= 100)        │
+│                           │
+│                           │
+│                           │
+│         1,100 rows        │
+│           0.00s           │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         PROJECTION        │
+│    ────────────────────   │
+│             #0            │
+│             #1            │
+│             #2            │
+│             #3            │
+│             #4            │
+│             #5            │
+│             #6            │
+│             #7            │
+│             #8            │
+│             #9            │
+│                           │
+│                           │
+│                           │
+│        517,493 rows       │
+│           0.00s           │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│           WINDOW          │
+│    ────────────────────   │
+│        Projections:       │
+│ RANK() OVER (PARTITION BY │
+│     i_category ORDER BY   │
+│  sumsales DESC NULLS LAST)│
+│                           │
+│                           │
+│                           │
+│        517,493 rows       │
+│           0.79s           │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│       HASH_GROUP_BY       │
+│    ────────────────────   │
+│          Groups:          │
+│             #0            │
+│             #1            │
+│             #2            │
+│             #3            │
+│             #4            │
+│             #5            │
+│             #6            │
+│             #7            │
+│                           │
+│    Aggregates: sum(#8)    │
+│                           │
+│                           │
+│                           │
+│        517,493 rows       │
+│           2.03s           │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         PROJECTION        │
+│    ────────────────────   │
+│         i_category        │
+│          i_class          │
+│          i_brand          │
+│       i_product_name      │
+│           d_year          │
+│           d_qoy           │
+│           d_moy           │
+│         s_store_id        │
+│       COALESCE((CAST      │
+│ (ss_sales_price AS DECIMAL│
+│ (17,2)) * CAST(ss_quantity│
+│  AS DECIMAL(17,0))), 0.00)│
+│                           │
+│                           │
+│                           │
+│        532,998 rows       │
+│           0.04s           │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         HASH_JOIN         │
+│    ────────────────────   │
+│      Join Type: INNER     │
+│                           │
+│        Conditions:        │
+│   ss_item_sk = i_item_sk  ├────────────────────────────────────────────────────────────────────────┐
+│                           │                                                                        │
+│                           │                                                                        │
+│                           │                                                                        │
+│        532,998 rows       │                                                                        │
+│           0.07s           │                                                                        │
+└─────────────┬─────────────┘                                                                        │
+┌─────────────┴─────────────┐                                                          ┌─────────────┴─────────────┐
+│         HASH_JOIN         │                                                          │         TABLE_SCAN        │
+│    ────────────────────   │                                                          │    ────────────────────   │
+│      Join Type: INNER     │                                                          │         Function:         │
+│                           │                                                          │        PARQUET_SCAN       │
+│        Conditions:        │                                                          │                           │
+│  ss_store_sk = s_store_sk │                                                          │        Projections:       │
+│                           │                                                          │         i_item_sk         │
+│                           │                                                          │          i_brand          │
+│                           │                                                          │          i_class          │
+│                           │                                                          │         i_category        │
+│           0.02s           │                                                          │       i_product_name      │
+│                           ├───────────────────────────────────────────┐              │                           │
+│                           │                                           │              │    Total Files Read: 1    │
+│                           │                                           │              │                           │
+│                           │                                           │              │        Filename(s):       │
+│                           │                                           │              │ /home/fabio/tpcds/parquet │
+│                           │                                           │              │    /sf1/item/*.parquet    │
+│                           │                                           │              │                           │
+│                           │                                           │              │                           │
+│                           │                                           │              │                           │
+│        532,998 rows       │                                           │              │        18,000 rows        │
+│          (0.02s)          │                                           │              │           0.00s           │
+└─────────────┬─────────────┘                                           │              └───────────────────────────┘
+┌─────────────┴─────────────┐                             ┌─────────────┴─────────────┐
+│         HASH_JOIN         │                             │         TABLE_SCAN        │
+│    ────────────────────   │                             │    ────────────────────   │
+│      Join Type: INNER     │                             │         Function:         │
+│                           │                             │        PARQUET_SCAN       │
+│        Conditions:        │                             │                           │
+│ss_sold_date_sk = d_date_sk│                             │        Projections:       │
+│                           │                             │         s_store_sk        │
+│                           │                             │         s_store_id        │
+│                           │                             │                           │
+│                           ├──────────────┐              │    Total Files Read: 1    │
+│           0.03s           │              │              │                           │
+│                           │              │              │        Filename(s):       │
+│                           │              │              │ /home/fabio/tpcds/parquet │
+│                           │              │              │    /sf1/store/*.parquet   │
+│                           │              │              │                           │
+│                           │              │              │                           │
+│                           │              │              │                           │
+│        539,305 rows       │              │              │          12 rows          │
+│          (0.03s)          │              │              │           0.00s           │
+└─────────────┬─────────────┘              │              └───────────────────────────┘
+┌─────────────┴─────────────┐┌─────────────┴─────────────┐
+│         TABLE_SCAN        ││         TABLE_SCAN        │
+│    ────────────────────   ││    ────────────────────   │
+│         Function:         ││         Function:         │
+│        PARQUET_SCAN       ││        PARQUET_SCAN       │
+│                           ││                           │
+│        Projections:       ││        Projections:       │
+│      ss_sold_date_sk      ││         d_date_sk         │
+│         ss_item_sk        ││           d_year          │
+│        ss_store_sk        ││           d_moy           │
+│        ss_quantity        ││           d_qoy           │
+│       ss_sales_price      ││                           │
+│                           ││          Filters:         │
+│      Dynamic Filters:     ││   d_month_seq>=1194 AND   │
+│ optional: ss_sold_date_sk>││      d_month_seq<=1205    │
+│   =2451361 AND optional:  ││                           │
+│  ss_sold_date_sk<=2451726 ││    Total Files Read: 2    │
+│        AND optional:      ││                           │
+│    ss_sold_date_sk IN BF  ││        Filename(s):       │
+│        (d_date_sk)        ││ /home/fabio/tpcds/parquet │
+│  optional: ss_item_sk>=1  ││  /sf1/date_dim/*.parquet  │
+│  AND optional: ss_item_sk<││                           │
+│           =18000          ││                           │
+│  optional: ss_store_sk>=1 ││                           │
+│  AND optional: ss_store_sk││                           │
+│            <=12           ││           0.00s           │
+│                           ││                           │
+│    Total Files Read: 4    ││                           │
+│                           ││                           │
+│        Filename(s):       ││                           │
+│ /home/fabio/tpcds/parquet ││                           │
+│ /sf1/store_sales/*.parquet││                           │
+│                           ││                           │
+│                           ││                           │
+│                           ││                           │
+│        539,305 rows       ││          366 rows         │
+│           0.37s           ││          (0.00s)          │
+└───────────────────────────┘└───────────────────────────┘
+
+fabio@LAPTOP-VLD20IG7:~/tpcds/DSGen-software-code-4.0.0/tools$
