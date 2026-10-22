@@ -5,7 +5,9 @@ do Mestrado em Engenharia Informática e de Computadores / Engenharia Informáti
 do ISEL.
 
 **Autores:** Miguel Alcobia (50746) e Fábio Pestana (50756)
+
 **Docente:** Professor António Teófilo
+
 **Ano letivo:** 2025/2026
 
 O objetivo do lab é correr o pipeline completo do TPC-DS numa só máquina:
