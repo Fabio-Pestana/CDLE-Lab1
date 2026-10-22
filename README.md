@@ -4,7 +4,7 @@ Trabalho realizado no âmbito da unidade curricular **Computação de Dados em L
 do Mestrado em Engenharia Informática e de Computadores / Engenharia Informática e Multimédia
 do ISEL.
 
-**Autores:** Miguel Alcobia (50746) · Fábio Pestana (50756)
+**Autores:** Miguel Alcobia (50746) e Fábio Pestana (50756)
 **Docente:** Professor António Teófilo
 **Ano letivo:** 2025/2026
 
